@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "ES2021",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "incremental": true,
+    "skipLibCheck": true,
+    "strict": true,                           // Включает все строгие проверки
+    "strictNullChecks": true,                 // Обязательные проверки на null и undefined
+    "noImplicitAny": true,                    // Запрещает неявное использование any
+    "strictBindCallApply": true,              // Ужесточает правила вызова bind/call/apply
+    "forceConsistentCasingInFileNames": true, // Проверка регистра имен файлов
+    "noFallthroughCasesInSwitch": true,       // Защита от ошибки fallthrough в switch
+    "noUnusedLocals": true,                   // Сообщение об объявленных, но неиспользованных переменных
+    "noUnusedParameters": true,               // Сообщение о неиспользуемых параметрах функций
+    "noImplicitReturns": true,                // Требует явного возвращения из функций
+    "noImplicitThis": true,                   // Защита от неявного this
+    "alwaysStrict": true                      // Включает строгий режим для всех файлов
+  }
+}
