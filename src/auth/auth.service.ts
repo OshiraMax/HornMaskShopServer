@@ -1,29 +1,38 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
 import { User } from 'src/users/entities/user.entity';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
-  private users: User[] = []; // Для простоты, массив пользователей вместо БД
-
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>, // Подключение репозитория
+    private readonly jwtService: JwtService,
+  ) {}
 
   async register(registerDto: RegisterDto): Promise<User> {
     const hashedPassword = await bcrypt.hash(registerDto.password, 10);
-    const newUser = { id: Date.now(), email: registerDto.email, password: hashedPassword };
-    this.users.push(newUser);
-    return newUser;
+    
+    // Создание и сохранение пользователя в базе данных
+    const newUser = this.userRepository.create({
+      email: registerDto.email,
+      password: hashedPassword,
+    });
+    return await this.userRepository.save(newUser);
   }
 
   async validateUser(loginDto: LoginDto): Promise<User | null> {
-    const user = this.users.find((user) => user.email === loginDto.email);
+    const user = await this.userRepository.findOne({ where: { email: loginDto.email } });
     if (user && (await bcrypt.compare(loginDto.password, user.password))) {
       return user;
     }
-    return null;
+    throw new UnauthorizedException('Invalid credentials');
   }
 
   async login(user: User) {
@@ -33,4 +42,3 @@ export class AuthService {
     };
   }
 }
-
